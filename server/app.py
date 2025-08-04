@@ -32,6 +32,9 @@ def create_app():
 
     return app
 
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True)
+app = create_app()
+
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()   # ✅ Auto-create tables on startup
+    app.run()
