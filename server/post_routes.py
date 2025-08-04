@@ -10,10 +10,14 @@ post_bp = Blueprint('post', __name__)
 @jwt_required()
 def create_post():
     try:
+        print("🟡 create_post called")
+        print("Headers:", request.headers)
+        print("Raw data:", request.data)
+        print("JSON:", request.get_json())
+
         user_id = get_jwt_identity()
-        print("Current user ID from token:", user_id)
         data = request.get_json()
-        text = data.get('text')
+        text = data.get('text') if data else None
 
         if not text:
             return jsonify({'message': 'Post text is required'}), 400
@@ -24,8 +28,9 @@ def create_post():
 
         return jsonify({'message': 'Post created successfully'}), 201
     except Exception as e:
-        print("Error in create_post:", e)
+        print("❌ Error in create_post:", e)
         return jsonify({'message': 'Internal error'}), 500
+
 
 
 
