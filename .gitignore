@@ -1,0 +1,14 @@
+# Node modules and Vite
+client/node_modules
+client/dist
+
+# Python virtual env and cache
+server/venv
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+
+# Env files
+*.env
