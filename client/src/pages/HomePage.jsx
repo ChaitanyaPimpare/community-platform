@@ -6,7 +6,7 @@ const HomePage = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/posts")
+    axios.get("https://community-platform-mbqh.onrender.com/api/posts")
       .then((res) => {
         if (Array.isArray(res.data)) {
           setPosts(res.data);

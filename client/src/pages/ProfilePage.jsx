@@ -15,7 +15,7 @@ const ProfilePage = () => {
     }
 
     axios
-      .get(`http://localhost:5000/api/user/${id}`)
+      .get(`https://community-platform-mbqh.onrender.com/api/user/${id}`)
       .then((res) => setUser(res.data))
       .catch((err) => {
         console.error(err);

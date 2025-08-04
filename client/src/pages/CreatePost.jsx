@@ -13,7 +13,7 @@ const CreatePost = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/posts",
+        "https://community-platform-mbqh.onrender.com/api/posts",
         { text },
         {
           headers: {
