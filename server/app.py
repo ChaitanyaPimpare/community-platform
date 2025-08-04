@@ -12,16 +12,21 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # ✅ Allow CORS only for your frontend
+    CORS(app, origins=[
+        "http://localhost:3000",  # for local testing
+        "https://community-platform-frontend-6hcu.onrender.com"  # deployed frontend
+    ])
+
     # Initialize Extensions
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
-    CORS(app)
 
     # Flask-Migrate Setup
     migrate = Migrate(app, db)
 
-    # ✅ Run migrations automatically at startup
+    # ✅ Auto-run migrations at startup
     with app.app_context():
         try:
             upgrade()
@@ -33,13 +38,14 @@ def create_app():
     app.register_blueprint(post_bp, url_prefix="/api/posts")
     app.register_blueprint(user_bp, url_prefix="/api/user")
 
+    # Health Check Route
     @app.route('/')
     def hello():
         return {'message': 'API Running'}
 
     return app
 
-# ✅ Run app if script is called directly
+# ✅ Start the server if run directly
 if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
