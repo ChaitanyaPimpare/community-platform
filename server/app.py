@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
 from config import Config
-from extensions import db, bcrypt, jwt  # ✅ Use extensions
-from flask_migrate import Migrate       # ✅ Import Migrate
+from extensions import db, bcrypt, jwt
+from flask_migrate import Migrate
 
 from auth_routes import auth_bp
 from post_routes import post_bp
@@ -19,7 +19,7 @@ def create_app():
     CORS(app)
 
     # Flask-Migrate Setup
-    migrate = Migrate(app, db)  # ✅ Add this
+    migrate = Migrate(app, db)
 
     # Register Blueprints
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
@@ -30,8 +30,15 @@ def create_app():
     def hello():
         return {'message': 'API Running'}
 
+    # ✅ Temporary route for creating tables (use only once after deploy)
+    @app.route('/create-tables')
+    def create_tables():
+        db.create_all()
+        return {'message': 'Tables created successfully'}
+
     return app
 
-if __name__ == '__main__':
+# ✅ Main block using the create_app function
+if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
