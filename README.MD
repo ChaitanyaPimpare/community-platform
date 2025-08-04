@@ -3,14 +3,14 @@ A minimal social platform where users can register, log in, create posts, view t
 
 🔗 Live Demo
 Frontend: https://community-platform-frontend-6hcu.onrender.com
-Backend: https://community-platform-backend.onrender.com
+Backend: https://community-platform-mbqh.onrender.com
 
 📂 GitHub Repositories
-Frontend: github.com/yourusername/community-platform-frontend
+Frontend:  https://github.com/ChaitanyaPimpare/community-platform/client
 
-Backend: github.com/yourusername/community-platform-backend
+Backend:  https://github.com/ChaitanyaPimpare/community-platform/server
 
-(Replace the above URLs with your actual GitHub repo links.)
+
 
 🛠️ Stack Used
 Frontend
@@ -45,8 +45,9 @@ Render (Frontend & Backend)
 📦 Backend Setup (Flask + PostgreSQL)
 
 # Clone the repo
-git clone https://github.com/yourusername/community-platform-backend
-cd community-platform-backend
+git clone https://github.com/ChaitanyaPimpare/community-platform
+
+cd server
 
 # Create virtual environment and activate
 python -m venv venv
