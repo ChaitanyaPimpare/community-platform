@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models import db, Post, User
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy.orm import joinedload
 
 post_bp = Blueprint('posts', __name__, url_prefix='/api')
 
@@ -29,22 +30,23 @@ def create_post():
 
 
 # Get all posts
-@post_bp.route('/posts', methods=['GET'])
-def get_all_posts():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    result = []
-
-    for post in posts:
-        user = User.query.get(post.author_id)
-        result.append({
-            'id': post.id,
-            'content': post.content,
-            'timestamp': post.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-            'author': {
-                'id': user.id,
-                'name': user.name,
-                'email': user.email
-            } if user else None
-        })
-
-    return jsonify(result), 200
+@post_routes.route('/posts', methods=['GET'])
+@jwt_required()
+def get_posts():
+    try:
+        posts = Post.query.options(joinedload(Post.author)).all()  # ⬅ eager load author
+        result = []
+        for post in posts:
+            result.append({
+                'id': post.id,
+                'content': post.content,
+                'timestamp': post.timestamp,
+                'author': {
+                    'id': post.author.id,
+                    'name': post.author.name,
+                    'email': post.author.email
+                }
+            })
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
