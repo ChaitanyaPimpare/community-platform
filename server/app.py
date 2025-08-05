@@ -13,7 +13,10 @@ def create_app():
     app.config.from_object(Config)
 
     # ✅ Allow CORS only for your frontend
-    CORS(app, origins=["https://community-platform-frontend-6hcu.onrender.com"])
+    CORS(app, resources={r"/api/*": {"origins": [
+    "https://community-platform-frontend-6hcu.onrender.com",
+    "http://localhost:3000"
+]}}, supports_credentials=True)
 
     # Initialize Extensions
     db.init_app(app)
@@ -32,7 +35,7 @@ def create_app():
 
     # Register Blueprints
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
-    app.register_blueprint(post_bp, url_prefix="/api")
+    app.register_blueprint(post_bp, url_prefix="/api/posts")
     app.register_blueprint(user_bp, url_prefix="/api/user")
 
     # Health Check Route
