@@ -9,13 +9,16 @@ const ProfilePage = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (!id || id === "null") {
-      navigate("/");
-      return;
+  const storedId = localStorage.getItem("userId");
+  const userIdToFetch = id || storedId;
+
+  if (!userIdToFetch || userIdToFetch === "null") {
+    navigate("/");
+    return;
     }
 
     axios
-      .get(`https://community-platform-mbqh.onrender.com/api/user/${id}`)
+      .get(`https://community-platform-mbqh.onrender.com/api/user/${userIdToFetch}`)
       .then((res) => setUser(res.data))
       .catch((err) => {
         console.error(err);

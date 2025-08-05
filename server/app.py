@@ -14,7 +14,6 @@ def create_app():
 
     # ✅ Allow CORS only for your frontend
     CORS(app, origins=[
-        "http://localhost:3000",  # for local testing
         "https://community-platform-frontend-6hcu.onrender.com"  # deployed frontend
     ])
 
