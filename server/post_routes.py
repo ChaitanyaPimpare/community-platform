@@ -1,55 +1,49 @@
 from flask import Blueprint, request, jsonify
+from models import db, Post, User
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from extensions import db
-from models import Post, User
 
-post_bp = Blueprint('post', __name__)
+post_bp = Blueprint('posts', __name__, url_prefix='/api')
 
-# -------- Create a new post --------
+# Create a new post
 @post_bp.route('/posts', methods=['POST'])
 @jwt_required()
 def create_post():
-    try:
-        print("🟡 create_post called")
-        print("Headers:", request.headers)
-        print("Raw data:", request.data)
-        print("JSON:", request.get_json())
+    data = request.get_json()
+    content = data.get('content')
 
-        user_id = get_jwt_identity()
-        data = request.get_json()
-        text = data.get('text') if data else None
+    if not content:
+        return jsonify({'message': 'Post content is required'}), 400
 
-        if not text:
-            return jsonify({'message': 'Post text is required'}), 400
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
 
-        new_post = Post(text=text, author_id=user_id)
-        db.session.add(new_post)
-        db.session.commit()
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
 
-        return jsonify({'message': 'Post created successfully'}), 201
-    except Exception as e:
-        print("❌ Error in create_post:", e)
-        return jsonify({'message': 'Internal error'}), 500
+    new_post = Post(content=content, author_id=user_id)
+    db.session.add(new_post)
+    db.session.commit()
+
+    return jsonify({'message': 'Post created successfully'}), 201
 
 
-
-
-# -------- Get all posts --------
+# Get all posts
 @post_bp.route('/posts', methods=['GET'])
 def get_all_posts():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     result = []
 
     for post in posts:
+        user = User.query.get(post.author_id)
         result.append({
             'id': post.id,
-            'text': post.text,
-            'timestamp': post.timestamp.isoformat(),
+            'content': post.content,
+            'timestamp': post.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
             'author': {
-                'id': post.author.id,
-                'name': post.author.name,
-                'email': post.author.email
-            }
+                'id': user.id,
+                'name': user.name,
+                'email': user.email
+            } if user else None
         })
 
     return jsonify(result), 200
