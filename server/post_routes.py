@@ -30,7 +30,7 @@ def create_post():
 
 
 # Get all posts
-@post_routes.route('/posts', methods=['GET'])
+@post_bp.route('/posts', methods=['GET'])
 @jwt_required()
 def get_posts():
     try:
