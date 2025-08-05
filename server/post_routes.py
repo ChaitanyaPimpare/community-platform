@@ -5,9 +5,12 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 post_bp = Blueprint('posts', __name__, url_prefix='/api')
 
 # Create a new post
-@post_bp.route('/posts', methods=['POST'])
-@jwt_required()
+@post_bp.route('/posts', methods=['POST', 'OPTIONS'])
+@jwt_required(optional=True)  # 🔑 Let preflight requests skip auth
 def create_post():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'CORS preflight'}), 200
+
     data = request.get_json()
     content = data.get('content')
 

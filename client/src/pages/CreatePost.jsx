@@ -14,12 +14,13 @@ const CreatePost = () => {
     try {
       const response = await axios.post(
         "https://community-platform-mbqh.onrender.com/api/posts",
-        { text },
+        { content: text }, 
         {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       );
 
