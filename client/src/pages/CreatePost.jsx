@@ -14,7 +14,7 @@ const CreatePost = () => {
     try {
       const response = await axios.post(
         "https://community-platform-mbqh.onrender.com/api/posts",
-        { content: text }, 
+        { text }, 
         {
           headers: {
             "Content-Type": "application/json",

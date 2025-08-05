@@ -5,16 +5,13 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 post_bp = Blueprint('posts', __name__, url_prefix='/api')
 
 # Create a new post
-@post_bp.route('/posts', methods=['POST', 'OPTIONS'])
-@jwt_required(optional=True)  # 🔑 Let preflight requests skip auth
+@post_bp.route('/posts', methods=['POST'])
+@jwt_required()
 def create_post():
-    if request.method == 'OPTIONS':
-        return jsonify({'message': 'CORS preflight'}), 200
-
     data = request.get_json()
-    content = data.get('content')
+    text = data.get('text')  # ✅ match the model field
 
-    if not content:
+    if not text:
         return jsonify({'message': 'Post content is required'}), 400
 
     user_id = get_jwt_identity()
@@ -23,11 +20,12 @@ def create_post():
     if not user:
         return jsonify({'message': 'User not found'}), 404
 
-    new_post = Post(content=content, author_id=user_id)
+    new_post = Post(text=text, author_id=user_id)  # ✅ use text here
     db.session.add(new_post)
     db.session.commit()
 
     return jsonify({'message': 'Post created successfully'}), 201
+
 
 
 # Get all posts
