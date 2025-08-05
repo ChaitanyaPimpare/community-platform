@@ -1,16 +1,16 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify 
 from models import db, Post, User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.orm import joinedload
 
-post_bp = Blueprint('posts', __name__, url_prefix='/api')
+post_bp = Blueprint('posts', __name__)  # No url_prefix here
 
 # Create a new post
-@post_bp.route('/posts', methods=['POST'])
+@post_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_post():
     data = request.get_json()
-    text = data.get('text')  # ✅ match the model field
+    text = data.get('text')  # ✅ match model field
 
     if not text:
         return jsonify({'message': 'Post content is required'}), 400
@@ -21,26 +21,25 @@ def create_post():
     if not user:
         return jsonify({'message': 'User not found'}), 404
 
-    new_post = Post(text=text, author_id=user_id)  # ✅ use text here
+    new_post = Post(text=text, author_id=user_id)
     db.session.add(new_post)
     db.session.commit()
 
     return jsonify({'message': 'Post created successfully'}), 201
 
 
-
 # Get all posts
-@post_bp.route('/posts', methods=['GET'])
-@jwt_required()
+@post_bp.route('/', methods=['GET'])
+@jwt_required(optional=True)
 def get_posts():
     try:
-        posts = Post.query.options(joinedload(Post.author)).all()  # ⬅ eager load author
+        posts = Post.query.options(joinedload(Post.author)).order_by(Post.timestamp.desc()).all()
         result = []
         for post in posts:
             result.append({
                 'id': post.id,
-                'content': post.content,
-                'timestamp': post.timestamp,
+                'text': post.text,  # ✅ fix field name
+                'timestamp': post.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                 'author': {
                     'id': post.author.id,
                     'name': post.author.name,

@@ -6,21 +6,29 @@ const HomePage = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    axios.get("https://community-platform-mbqh.onrender.com/api/posts")
-      .then((res) => {
-        if (Array.isArray(res.data)) {
-          setPosts(res.data);
-        } else if (Array.isArray(res.data.posts)) {
-          setPosts(res.data.posts);
-        } else {
-          setPosts([]);
-        }
-      })
-      .catch((err) => {
-        console.error("❌ Error fetching posts:", err);
+  const token = localStorage.getItem("token");
+
+  axios.get("https://community-platform-mbqh.onrender.com/api/posts", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+  })
+    .then((res) => {
+      if (Array.isArray(res.data)) {
+        setPosts(res.data);
+      } else if (Array.isArray(res.data.posts)) {
+        setPosts(res.data.posts);
+      } else {
         setPosts([]);
-      });
-  }, []);
+      }
+    })
+    .catch((err) => {
+      console.error("❌ Error fetching posts:", err);
+      setPosts([]);
+    });
+}, []);
+
 
   return (
     <>
