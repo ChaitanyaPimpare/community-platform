@@ -13,10 +13,7 @@ def create_app():
     app.config.from_object(Config)
 
     # ✅ Allow CORS only for your frontend
-    CORS(app, resources={r"/api/*": {"origins": [
-    "https://community-platform-frontend-6hcu.onrender.com",
-    "http://localhost:3000"
-]}}, supports_credentials=True)
+    CORS(app, origins=["https://community-platform-frontend-6hcu.onrender.com"])
 
     # Initialize Extensions
     db.init_app(app)
