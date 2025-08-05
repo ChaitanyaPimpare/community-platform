@@ -6,11 +6,15 @@ from sqlalchemy.orm import joinedload
 post_bp = Blueprint('posts', __name__)  # No url_prefix here
 
 # Create a new post
-@post_bp.route('/', methods=['POST'])
-@jwt_required()
+@post_bp.route('/', methods=['POST', 'OPTIONS'])
+@jwt_required(optional=True)  # Make jwt optional so OPTIONS can pass
 def create_post():
+    if request.method == 'OPTIONS':
+        # Preflight response
+        return '', 204
+
     data = request.get_json()
-    text = data.get('text')  # ✅ match model field
+    text = data.get('text')
 
     if not text:
         return jsonify({'message': 'Post content is required'}), 400
@@ -26,6 +30,7 @@ def create_post():
     db.session.commit()
 
     return jsonify({'message': 'Post created successfully'}), 201
+
 
 
 # Get all posts
