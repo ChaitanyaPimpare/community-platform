@@ -8,7 +8,7 @@ const HomePage = () => {
   useEffect(() => {
   const token = localStorage.getItem("token");
 
-  axios.get("https://community-platform-mbqh.onrender.com/api/posts", {
+  axios.get("https://community-platform-mbqh.onrender.com/api/posts/", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
