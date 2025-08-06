@@ -19,7 +19,7 @@ def create_post():
     if not text:
         return jsonify({'message': 'Post content is required'}), 400
 
-    user_id = get_jwt_identity()
+    user_id = str(get_jwt_identity())
     user = User.query.get(user_id)
 
     if not user:
