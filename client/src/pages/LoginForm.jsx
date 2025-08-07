@@ -17,7 +17,7 @@ const LoginForm = () => {
         password
       });
 
-      setMessage('Login successful!');
+      alert('Login successful!');
       console.log(res.data);
 
       localStorage.setItem('token', res.data.access_token);
